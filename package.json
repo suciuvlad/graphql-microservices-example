@@ -1,0 +1,18 @@
+{
+  "name": "graphql-microservices-example",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "lerna run start:dev --parallel --concurrent"
+  },
+  "main": "index.js",
+  "repository": "git@github.com:suciuvlad/graphql-microservices-example.git",
+  "author": "Vlad Suciu <suciu.vlad@gmail.com>",
+  "private": true,
+  "workspaces": [
+    "services/*"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "^2.11.0"
+  }
+}
