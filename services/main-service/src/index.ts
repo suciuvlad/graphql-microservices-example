@@ -48,7 +48,21 @@ app.use(
     const cosmicJsServiceSchema = await createCosmicJsServiceSchema();
 
     const schema = mergeSchemas({
-      schemas: [movieServiceSchema, cosmicJsServiceSchema]
+      schemas: [movieServiceSchema, cosmicJsServiceSchema],
+      resolvers: {
+        Query: {
+          movies(parent, args, context, info) {
+            info.cacheControl.setCacheHint({ maxAge: 1000 });
+            return info.mergeInfo.delegateToSchema({
+              fieldName: 'movies',
+              schema: movieServiceSchema,
+              operation: 'query',
+              context,
+              info
+            });
+          }
+        }
+      }
     });
 
     return {
@@ -66,7 +80,15 @@ app.use(
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
 const engine = new ApolloEngine({
-  apiKey: 'service:microservices-example:-kee_qJAX8UKDLPjI7JVjw'
+  apiKey: 'service:microservices-example:-kee_qJAX8UKDLPjI7JVjw',
+  // Instruct engine to keep the extensions
+  frontends: [
+    {
+      extensions: {
+        strip: ['tracing']
+      }
+    }
+  ]
 });
 
 engine.listen({
