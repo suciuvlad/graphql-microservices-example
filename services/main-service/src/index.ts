@@ -8,6 +8,7 @@ import {
 } from 'graphql-tools';
 import { createHttpLink } from 'apollo-link-http';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
+import { ApolloEngine } from 'apollo-engine';
 
 const app = express();
 
@@ -53,15 +54,22 @@ app.use(
     return {
       schema: schema,
       graphiql: true,
+      tracing: true,
+      cacheControl: {
+        defaultMaxAge: 3500
+      },
       context: { req, res }
     };
   })
 );
 
-const PORT = 4000;
-
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
-app.listen(PORT, () => {
-  console.log(`Server available at ${PORT}`);
+const engine = new ApolloEngine({
+  apiKey: 'service:microservices-example:-kee_qJAX8UKDLPjI7JVjw'
+});
+
+engine.listen({
+  port: 4000,
+  expressApp: app
 });
